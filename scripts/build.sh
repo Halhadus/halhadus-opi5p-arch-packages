@@ -32,7 +32,11 @@ build_package() {
     local pkg_dir="$1"
     if [ ! -d "$pkg_name" ]; then
         log "Local folder not found. Cloning from AUR: $pkg_name"
-        sudo -u builder git clone "https://aur.archlinux.org/$pkg_name.git"
+        if ! git clone "https://aur.archlinux.org/$pkg_name.git"; then
+            echo "ERROR: Failed to clone $pkg_name"
+            exit 1
+        fi
+        chown -R builder:builder "$pkg_name"
     fi
     if [ ! -d "$WORK_DIR/$pkg_dir" ]; then
         error "Directory $pkg_dir not found!"
