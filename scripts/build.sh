@@ -52,9 +52,8 @@ build_package() {
     if [ -n "$PKG_FILES" ]; then
         for f in $PKG_FILES; do
             PKG_BASE=$(basename "$f")
-            CLEAN_NAME=${PKG_BASE//:/_}
             success "Package built: $PKG_BASE"
-            cp -v "$f" "$OUTPUT_DIR/$CLEAN_NAME"
+            cp -v "$f" "$OUTPUT_DIR/$PKG_BASE"
             if [[ "$pkg_dir" == *"linux-"* ]]; then
                 log "Skipping installation for Kernel package..."
             else
