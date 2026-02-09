@@ -36,12 +36,14 @@ build_package() {
     log "Building: $pkg_dir"
     cd "$WORK_DIR/$pkg_dir"
     rm -f *.pkg.tar.zst
-    sudo -u builder makepkg -s --noconfirm --needed --install
+    sudo -u builder makepkg -s --noconfirm --needed
     PKG_FILE=$(find . -maxdepth 1 -type f -name "*.pkg.tar.*" ! -name "*.sig" | head -n 1)
     if [ -n "$PKG_FILE" ]; then
         PKG_FILE=$(basename "$PKG_FILE")
         success "$pkg_dir built successfully."
+        log "Installing $PKG_FILE to system..."
         cp -v "$PKG_FILE" "$OUTPUT_DIR/"
+        pacman -U --noconfirm "$PKG_FILE"
         repo-add "$OUTPUT_DIR/halhadus-repo.db.tar.gz" "$OUTPUT_DIR/$PKG_FILE"
     else
         error "No package file created for $pkg_dir"
