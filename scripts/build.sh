@@ -37,8 +37,9 @@ build_package() {
     cd "$WORK_DIR/$pkg_dir"
     rm -f *.pkg.tar.zst
     sudo -u builder makepkg -s --noconfirm --needed --install
-    PKG_FILE=$(ls *.pkg.tar.zst 2>/dev/null | head -n 1)
+    PKG_FILE=$(find . -maxdepth 1 -type f -name "*.pkg.tar.*" ! -name "*.sig" | head -n 1)
     if [ -n "$PKG_FILE" ]; then
+        PKG_FILE=$(basename "$PKG_FILE")
         success "$pkg_dir built successfully."
         cp -v "$PKG_FILE" "$OUTPUT_DIR/"
         repo-add "$OUTPUT_DIR/halhadus-repo.db.tar.gz" "$OUTPUT_DIR/$PKG_FILE"
