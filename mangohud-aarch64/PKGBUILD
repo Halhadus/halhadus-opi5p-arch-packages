@@ -17,7 +17,6 @@ build() {
     arch-meson "$_pkgname" build \
         -Dmangoapp=true \
         -Dmangohudctl=true \
-        -Dmangoapp_layer=true \
 	-Dwith_nvml=disabled \
 	-Dwith_xnvctrl=disabled \
 	-Dwith_wayland=enabled \
