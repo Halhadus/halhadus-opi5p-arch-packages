@@ -48,14 +48,20 @@ build_package() {
     log "Building: $pkg_dir"
     rm -f *.pkg.tar.*
     sudo -u builder makepkg -s --noconfirm --needed --skippgpcheck
-    PKG_FILE=$(find . -maxdepth 1 -type f -name "*.pkg.tar.*" ! -name "*.sig" | head -n 1)
-    if [ -n "$PKG_FILE" ]; then
-        PKG_FILE=$(basename "$PKG_FILE")
-        success "$pkg_dir built successfully."
-        log "Installing $PKG_FILE to system..."
-        cp -v "$PKG_FILE" "$OUTPUT_DIR/"
-        pacman -U --noconfirm "$PKG_FILE"
-        repo-add "$OUTPUT_DIR/halhadus-repo.db.tar.gz" "$OUTPUT_DIR/$PKG_FILE"
+    PKG_FILES=$(find . -maxdepth 1 -type f -name "*.pkg.tar.*" ! -name "*.sig")
+    if [ -n "$PKG_FILES" ]; then
+        for f in $PKG_FILES; do
+            PKG_BASE=$(basename "$f")
+            CLEAN_NAME=${PKG_BASE//:/_}
+            success "Package built: $PKG_BASE"
+            cp -v "$f" "$OUTPUT_DIR/$CLEAN_NAME"
+            if [[ "$pkg_dir" == *"linux-"* ]]; then
+                log "Skipping installation for Kernel package..."
+            else
+                log "Installing $PKG_BASE to system..."
+                pacman -U --noconfirm "$f"
+            fi
+        done
     else
         error "No package file created for $pkg_dir"
     fi
