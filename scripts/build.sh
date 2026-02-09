@@ -42,10 +42,10 @@ build_package() {
     if [ ! -d "$WORK_DIR/$pkg_dir" ]; then
         error "Directory $pkg_dir not found!"
     fi
+    cd "$WORK_DIR/$pkg_dir"
     log "Patching arch to aarch64..."
     sed -i "s/^arch=(.*)/arch=('aarch64')/" PKGBUILD
     log "Building: $pkg_dir"
-    cd "$WORK_DIR/$pkg_dir"
     rm -f *.pkg.tar.*
     sudo -u builder makepkg -s --noconfirm --needed --skippgpcheck
     PKG_FILE=$(find . -maxdepth 1 -type f -name "*.pkg.tar.*" ! -name "*.sig" | head -n 1)
