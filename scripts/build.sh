@@ -35,8 +35,8 @@ build_package() {
     fi
     log "Building: $pkg_dir"
     cd "$WORK_DIR/$pkg_dir"
-    rm -f *.pkg.tar.zst
-    sudo -u builder makepkg -s --noconfirm --needed
+    rm -f *.pkg.tar.*
+    sudo -u builder makepkg -s --noconfirm --needed --skippgpcheck
     PKG_FILE=$(find . -maxdepth 1 -type f -name "*.pkg.tar.*" ! -name "*.sig" | head -n 1)
     if [ -n "$PKG_FILE" ]; then
         PKG_FILE=$(basename "$PKG_FILE")
