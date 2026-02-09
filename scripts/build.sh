@@ -30,13 +30,13 @@ prepare_env() {
 
 build_package() {
     local pkg_dir="$1"
-    if [ ! -d "$pkg_name" ]; then
-        log "Local folder not found. Cloning from AUR: $pkg_name"
-        if ! git clone "https://aur.archlinux.org/$pkg_name.git"; then
-            echo "ERROR: Failed to clone $pkg_name"
+    if [ ! -d "$pkg_dir" ]; then
+        log "Local folder not found. Cloning from AUR: $pkg_dir"
+        if ! git clone "https://aur.archlinux.org/$pkg_dir.git"; then
+            echo "ERROR: Failed to clone $pkg_dir"
             exit 1
         fi
-        chown -R builder:builder "$pkg_name"
+        chown -R builder:builder "$pkg_dir"
     fi
     if [ ! -d "$WORK_DIR/$pkg_dir" ]; then
         error "Directory $pkg_dir not found!"
