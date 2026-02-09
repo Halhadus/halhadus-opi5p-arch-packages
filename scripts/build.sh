@@ -30,9 +30,15 @@ prepare_env() {
 
 build_package() {
     local pkg_dir="$1"
+    if [ ! -d "$pkg_name" ]; then
+        log "Local folder not found. Cloning from AUR: $pkg_name"
+        sudo -u builder git clone "https://aur.archlinux.org/$pkg_name.git"
+    fi
     if [ ! -d "$WORK_DIR/$pkg_dir" ]; then
         error "Directory $pkg_dir not found!"
     fi
+    log "Patching arch to aarch64..."
+    sed -i "s/^arch=(.*)/arch=('aarch64')/" PKGBUILD
     log "Building: $pkg_dir"
     cd "$WORK_DIR/$pkg_dir"
     rm -f *.pkg.tar.*
@@ -55,11 +61,13 @@ prepare_env
 PACKAGES=(
     "ffmpeg-v4l2-request"
     "mpv-v4l2-request"
-    "wayfire-plugins-extra-aarch64"
-    "glfw-wayland-minecraft-cursorfix-aarch64"
+    "wf-config"
+    "wayfire"
+    "wayfire-plugins-extra"
+    "glfw-wayland-minecraft-cursorfix"
     "mangohud-aarch64"
     "nvtop-panthor"
-    "wlrctl-aarch64"
+    "wlrctl"
 )
 
 for pkg in "${PACKAGES[@]}"; do
