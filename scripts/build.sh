@@ -29,6 +29,7 @@ prepare_env() {
 }
 
 build_package() {
+    cd "$WORK_DIR"
     local pkg_dir="$1"
     if [ ! -d "$pkg_dir" ]; then
         log "Local folder not found. Cloning from AUR: $pkg_dir"
