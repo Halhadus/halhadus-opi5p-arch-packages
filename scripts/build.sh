@@ -73,11 +73,15 @@ PACKAGES=(
     "mangohud-aarch64"
     "nvtop-panthor"
     "wlrctl"
+    "linux-collabora-rockchip-devel"
 )
 
 for pkg in "${PACKAGES[@]}"; do
     build_package "$pkg"
 done
 
+log "Zipping all packages..."
+cd "$OUTPUT_DIR"
+zip -r packages.zip ./*
 log "All builds finished. Artifacts are in $OUTPUT_DIR"
 chmod -R 777 "$OUTPUT_DIR"
