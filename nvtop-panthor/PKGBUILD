@@ -1,0 +1,24 @@
+eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
+
+_oname=nvtop-git
+inherit "https://aur.archlinux.org/cgit/aur.git/plain/" "?h=$_oname"
+
+pkgname=nvtop-panthor
+arch=('aarch64')
+
+pkgver() {
+  cd "$_oname"
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//g'
+}
+
+build() {
+  cd "$_oname"
+  cmake -DCMAKE_INSTALL_PREFIX=/usr -DPANTHOR_SUPPORT=ON -DNVIDIA_SUPPORT=OFF -DAMDGPU_SUPPORT=OFF -DINTEL_SUPPORT=OFF .
+  make
+}
+
+package() {
+  cd "$_oname"
+  make DESTDIR="${pkgdir}/" install
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

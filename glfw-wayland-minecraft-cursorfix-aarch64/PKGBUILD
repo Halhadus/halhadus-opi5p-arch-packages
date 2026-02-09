@@ -1,0 +1,16 @@
+eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
+inherit "https://aur.archlinux.org/cgit/aur.git/plain/" "?h=glfw-wayland-minecraft-cursorfix"
+
+arch=('aarch64')
+
+prepare() {
+  old_prepare
+}
+
+build() {
+  old_build
+}
+
+package() {
+  old_package
+}

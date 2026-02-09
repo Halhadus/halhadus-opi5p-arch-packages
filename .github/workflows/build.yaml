@@ -1,0 +1,58 @@
+name: Rockchip Mainline Package Builder
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm64
+    container:
+      image: agners/archlinuxarm:latest
+      options: --privileged
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Prep Arch Environment
+        run: |
+          pacman-key --init
+          pacman-key --populate archlinuxarm
+          pacman -Syu --noconfirm base-devel git cmake curl zip sudo
+          useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          chown -R builder:builder .
+          sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j4"/' /etc/makepkg.conf
+
+      - name: Auto-Discover and Build
+        run: |
+          mkdir -p artifacts
+          find . -maxdepth 2 -name PKGBUILD | while read -r pkgbuild; do
+            pkg_dir=$(dirname "$pkgbuild")
+            if [ "$pkg_dir" != "." ]; then
+              echo "##############################################"
+              echo "Building: ${pkg_dir#./}"
+              echo "##############################################"              
+              cd "$pkg_dir"
+              sudo -u builder makepkg -sc --noconfirm || echo "FAILED: $pkg_dir"
+              find . -name "*.pkg.tar.zst" -exec cp {} ../artifacts/ \;
+              cd ..
+            fi
+          done
+
+      - name: Zip Artifacts
+        run: |
+          if [ -d "artifacts" ] && [ "$(ls -A artifacts)" ]; then
+            zip -j packages.zip artifacts/*.pkg.tar.zst
+          else
+            echo "No packages found to zip!"
+            exit 1
+          fi
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-repo-bundle
+          path: packages.zip

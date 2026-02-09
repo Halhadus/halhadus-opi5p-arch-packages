@@ -1,0 +1,38 @@
+CONFIG="--disable-vapoursynth --disable-doc"
+eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
+inherit https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/extra/ffmpeg/
+
+_pkgname=ffmpeg
+pkgname=ffmpeg-v4l2-request
+arch=('aarch64')
+conflicts+=("ffmpeg")
+provides+=("ffmpeg")
+replaces+=("ffmpeg-v4l2-request")
+
+source[0]="ffmpeg::git+https://github.com/Kwiboo/FFmpeg.git"
+b2sums[0]='SKIP'
+
+pkgver() {
+  cd ffmpeg
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  cd "$_pkgname"
+  cd "$srcdir"
+  pkgname=$_pkgname
+  old_prepare
+  pkgname=ffmpeg-v4l2-request
+}
+
+build() {
+  pkgname=$_pkgname
+  old_build
+  pkgname=ffmpeg-v4l2-request
+}
+
+package() {
+  pkgname=$_pkgname
+  old_package
+  pkgname=ffmpeg-v4l2-request
+}

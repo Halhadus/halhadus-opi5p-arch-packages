@@ -1,0 +1,30 @@
+eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
+inherit "https://aur.archlinux.org/cgit/aur.git/plain/" "?h=mangohud-git"
+
+arch=('aarch64')
+
+_cleaned_deps=()
+for dep in "${makedepends[@]}"; do
+    [[ "$dep" != "libxnvctrl" ]] && _cleaned_deps+=("$dep")
+done
+makedepends=("${_cleaned_deps[@]}")
+
+prepare() {
+  old_prepare
+}
+
+build() {
+    arch-meson "$_pkgname" build \
+        -Dmangoapp=true \
+        -Dmangohudctl=true \
+        -Dmangoapp_layer=true \
+	-Dwith_nvml=disabled \
+	-Dwith_xnvctrl=disabled \
+	-Dwith_wayland=enabled \
+        --wrap-mode=default
+    meson compile -C build
+}
+
+package() {
+  old_package
+}

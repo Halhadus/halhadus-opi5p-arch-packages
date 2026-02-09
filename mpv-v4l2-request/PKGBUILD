@@ -1,0 +1,42 @@
+eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
+inherit https://gitlab.archlinux.org/archlinux/packaging/packages/mpv/-/raw/main/
+
+_mpv_branch="philipl:mpv:v4l2request"
+_mpv_base="master"
+
+arch=('armv7h' 'aarch64')
+conflicts=("mpv")
+provides=("mpv")
+replaces=("mpv-v4l2-request")
+source+=("v4l2-request.patch::https://github.com/mpv-player/mpv/compare/${_mpv_base}...${_mpv_branch}.patch")
+sha256sums+=('SKIP')
+_pkgname=mpv-v4l2-request
+old_pkgname=$pkgname
+pkgname=$_pkgname
+
+for i in "${!depends[@]}"; do
+    if [[ ${depends[$i]} == "ffmpeg" ]]; then
+        depends[$i]="ffmpeg-v4l2-request"
+    fi
+done
+
+prepare(){
+  cd $srcdir/mpv
+  patch -p1 -N -i ../v4l2-request.patch
+  cd $srcdir
+  pkgname=$old_pkgname
+  old_prepare
+  pkgname=$_pkgname
+}
+
+build(){
+  pkgname=$old_pkgname
+  old_build
+  pkgname=$_pkgname
+}
+
+package(){
+  pkgname=$old_pkgname
+  old_package
+  pkgname=$_pkgname
+}
