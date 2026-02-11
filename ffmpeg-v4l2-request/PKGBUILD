@@ -9,8 +9,8 @@ conflicts+=("ffmpeg")
 provides+=("ffmpeg")
 replaces+=("ffmpeg-v4l2-request")
 
-source[0]="ffmpeg::git+https://github.com/Kwiboo/FFmpeg.git"
-b2sums[0]='SKIP'
+source+=("v4l2request.diff::https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/20847.diff")
+b2sums+=('SKIP')
 
 pkgver() {
   cd ffmpeg
@@ -22,6 +22,7 @@ prepare() {
   cd "$srcdir"
   pkgname=$_pkgname
   old_prepare
+  git apply -3 --exclude='.forgejo/CODEOWNERS' ../v4l2request.diff
   pkgname=ffmpeg-v4l2-request
 }
 
