@@ -29,8 +29,6 @@ pkgver() {
 
 prepare() {
   cd linux
-  echo "Disabling HDMI RX..."
-  sed -i '/hdmi_receiver@fdee0000 {/,/};/ s/status = "okay";/status = "disabled";/' arch/arm64/boot/dts/rockchip/rk3588-orangepi-5-plus.dts
   echo "Patching DTS for PWM0..."
   sed -i '/pwm@fd8b0000 {/,/};/ s/status = "disabled";/status = "okay";/' arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
   echo "Setting version..."
