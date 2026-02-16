@@ -26,7 +26,6 @@ prepare_env() {
     chown -R builder:builder "$WORK_DIR"
     chown -R builder:builder "$OUTPUT_DIR"
     sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j4"/' /etc/makepkg.conf
-    git config --system url."https://github.com/FFmpeg/FFmpeg.git".insteadOf "https://git.ffmpeg.org/ffmpeg.git"
 }
 
 build_package() {

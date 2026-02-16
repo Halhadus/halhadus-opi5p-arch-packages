@@ -9,6 +9,7 @@ conflicts+=("ffmpeg")
 provides+=("ffmpeg")
 replaces+=("ffmpeg-v4l2-request")
 
+source=("${source[@]//git.ffmpeg.org\/ffmpeg.git/github.com\/FFmpeg\/FFmpeg.git}")
 source+=("v4l2request.diff::https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/20847.diff")
 b2sums+=('SKIP')
 
