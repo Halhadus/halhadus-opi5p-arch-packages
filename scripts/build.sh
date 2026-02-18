@@ -26,6 +26,9 @@ prepare_env() {
     chown -R builder:builder "$WORK_DIR"
     chown -R builder:builder "$OUTPUT_DIR"
     sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j4"/' /etc/makepkg.conf
+    sed -i -E 's/-m(arch|cpu)=[^[:space:]"]+/-mcpu=cortex-a76.cortex-a55/g' /etc/makepkg.conf
+    sed -i -E 's/@CARCHFLAGS@|-m(arch|cpu)=[^[:space:]"]+/-mcpu=cortex-a76.cortex-a55 /g' /etc/makepkg.conf.d/fortran.conf
+    sed -i 's/^RUSTFLAGS=.*/RUSTFLAGS="-C target-cpu=native"/' /etc/makepkg.conf.d/rust.conf
 }
 
 build_package() {

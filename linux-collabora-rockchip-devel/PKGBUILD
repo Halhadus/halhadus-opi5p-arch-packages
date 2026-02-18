@@ -43,6 +43,7 @@ build() {
   make olddefconfig prepare
   make -s kernelrelease > version
   unset LDFLAGS
+  export KCFLAGS="-march=armv8.2-a -mtune=cortex-a76.cortex-a55"
   make ${MAKEFLAGS} Image modules
   make ${MAKEFLAGS} DTC_FLAGS="-@" dtbs
 }
