@@ -1,4 +1,4 @@
-CONFIG="--disable-vapoursynth --disable-doc"
+CONFIG="--disable-vapoursynth --disable-doc --enable-v4l2-request --enable-libudev --enable-v4l2_m2m --enable-libdrm --enable-neon --enable-hwaccels"
 eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
 inherit https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/extra/ffmpeg/
 
@@ -11,6 +11,14 @@ replaces+=("ffmpeg-v4l2-request")
 
 source=("${source[@]//git+https:\/\/git.ffmpeg.org\/ffmpeg.git/ffmpeg::git+https:\/\/github.com\/FFmpeg\/FFmpeg.git}")
 source+=("v4l2request.diff::https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/20847.diff")
+source+=("strps1.patch::https://gitlab.collabora.com/detlev/ffmpeg/-/commit/20b37c99b9318e1b104aa11f2569fcb0c7387e1e.patch")
+source+=("strps2.patch::https://gitlab.collabora.com/detlev/ffmpeg/-/commit/dfa10f6e10441aef0d8b45c97bf3bce6598ede48.patch")
+source+=("drmprime.patch::https://github.com/LibreELEC/LibreELEC.tv/raw/refs/heads/master/packages/multimedia/ffmpeg/patches/v4l2-drmprime/ffmpeg-001-v4l2-drmprime.patch")
+source+=("deinterlace.patch::https://github.com/LibreELEC/LibreELEC.tv/raw/refs/heads/master/packages/multimedia/ffmpeg/patches/vf-deinterlace-v4l2m2m/ffmpeg-001-vf-deinterlace-v4l2m2m.patch")
+b2sums+=('SKIP')
+b2sums+=('SKIP')
+b2sums+=('SKIP')
+b2sums+=('SKIP')
 b2sums+=('SKIP')
 
 pkgver() {
@@ -24,6 +32,31 @@ prepare() {
   pkgname=$_pkgname
   old_prepare
   git apply -3 --exclude='.forgejo/CODEOWNERS' ../v4l2request.diff
+  git apply -3 --exclude='.forgejo/CODEOWNERS' ../strps1.patch
+  git apply -3 --exclude='.forgejo/CODEOWNERS' ../strps2.patch
+  sed -i '30i \
+#ifndef V4L2_CID_STATELESS_HEVC_EXT_SPS_ST_RPS \
+#define V4L2_CID_STATELESS_HEVC_EXT_SPS_ST_RPS (V4L2_CID_CODEC_STATELESS_BASE + 408) \
+#define V4L2_CID_STATELESS_HEVC_EXT_SPS_LT_RPS (V4L2_CID_CODEC_STATELESS_BASE + 409) \
+struct v4l2_ctrl_hevc_ext_sps_st_rps { \
+    __u8 delta_idx_minus1; \
+    __u8 delta_rps_sign; \
+    __u8 num_negative_pics; \
+    __u8 num_positive_pics; \
+    __u32 used_by_curr_pic; \
+    __u32 use_delta_flag; \
+    __u16 abs_delta_rps_minus1; \
+    __u16 delta_poc_s0_minus1[16]; \
+    __u16 delta_poc_s1_minus1[16]; \
+    __u16 flags; \
+}; \
+struct v4l2_ctrl_hevc_ext_sps_lt_rps { \
+    __u16 lt_ref_pic_poc_lsb_sps; \
+    __u16 flags; \
+}; \
+#endif' libavcodec/v4l2_request_hevc.c
+  git apply -3 --exclude='.forgejo/CODEOWNERS' ../drmprime.patch
+  git apply -3 --exclude='.forgejo/CODEOWNERS' ../deinterlace.patch
   pkgname=ffmpeg-v4l2-request
 }
 
