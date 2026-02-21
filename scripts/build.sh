@@ -81,7 +81,6 @@ PACKAGES=(
     "mangohud-aarch64"
     "nvtop-panthor"
     "wlrctl"
-    "mesa-rk35xx-git"
     "linux-collabora-rockchip-devel"
 )
 
