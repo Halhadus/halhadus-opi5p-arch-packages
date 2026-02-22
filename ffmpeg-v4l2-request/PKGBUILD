@@ -41,8 +41,8 @@ prepare() {
 
 build() {
   pkgname=$_pkgname
-  export CFLAGS="-I../../kheaders $CFLAGS"
-  export CXXFLAGS="-I../../kheaders $CXXFLAGS"
+  local KHEADERS_DIR="$srcdir/../kheaders"
+  export CFLAGS="-I$KHEADERS_DIR -I$KHEADERS_DIR/include -I$KHEADERS_DIR/include/uapi $CFLAGS"
   old_build
   pkgname=ffmpeg-v4l2-request
 }
