@@ -50,6 +50,7 @@ build_package() {
     sed -i "s/^arch=(.*)/arch=('aarch64')/" PKGBUILD
     if [[ "$pkg_dir" == "ffmpeg-v4l2-request" ]]; then
         log "Extracting kernel headers for ffmpeg..."
+        mkdir "$WORK_DIR/$pkg_dir/kheaders"
         tar -axf "$WORK_DIR/extras/kheaders.tar.zst" -C "$WORK_DIR/$pkg_dir/"
         chown -R builder:builder "$WORK_DIR/$pkg_dir/kheaders"
     fi
