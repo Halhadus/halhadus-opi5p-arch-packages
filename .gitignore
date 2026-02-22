@@ -9,6 +9,7 @@
 *.log
 *.log.*
 *.sig
+!extras/kheaders.tar.zst
 
 pkg/
 src/
