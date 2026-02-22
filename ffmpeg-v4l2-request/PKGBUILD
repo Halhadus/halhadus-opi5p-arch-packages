@@ -43,6 +43,7 @@ build() {
   pkgname=$_pkgname
   local KHEADERS_DIR="$srcdir/../kheaders"
   export CFLAGS="-I$KHEADERS_DIR -I$KHEADERS_DIR/include -I$KHEADERS_DIR/include/uapi $CFLAGS"
+  export CXXFLAGS="-I$KHEADERS_DIR -I$KHEADERS_DIR/include -I$KHEADERS_DIR/include/uapi $CXXFLAGS"
   old_build
   pkgname=ffmpeg-v4l2-request
 }
