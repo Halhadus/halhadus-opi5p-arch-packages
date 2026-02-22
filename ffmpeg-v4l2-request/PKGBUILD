@@ -34,27 +34,6 @@ prepare() {
   git apply -3 --exclude='.forgejo/CODEOWNERS' ../v4l2request.diff
   git apply -3 --exclude='.forgejo/CODEOWNERS' ../strps1.patch
   git apply -3 --exclude='.forgejo/CODEOWNERS' ../strps2.patch
-  sed -i '30i \
-#ifndef V4L2_CID_STATELESS_HEVC_EXT_SPS_ST_RPS \
-#define V4L2_CID_STATELESS_HEVC_EXT_SPS_ST_RPS (V4L2_CID_CODEC_STATELESS_BASE + 408) \
-#define V4L2_CID_STATELESS_HEVC_EXT_SPS_LT_RPS (V4L2_CID_CODEC_STATELESS_BASE + 409) \
-struct v4l2_ctrl_hevc_ext_sps_st_rps { \
-    __u8 delta_idx_minus1; \
-    __u8 delta_rps_sign; \
-    __u8 num_negative_pics; \
-    __u8 num_positive_pics; \
-    __u32 used_by_curr_pic; \
-    __u32 use_delta_flag; \
-    __u16 abs_delta_rps_minus1; \
-    __u16 delta_poc_s0_minus1[16]; \
-    __u16 delta_poc_s1_minus1[16]; \
-    __u16 flags; \
-}; \
-struct v4l2_ctrl_hevc_ext_sps_lt_rps { \
-    __u16 lt_ref_pic_poc_lsb_sps; \
-    __u16 flags; \
-}; \
-#endif' libavcodec/v4l2_request_hevc.c
   git apply -3 --exclude='.forgejo/CODEOWNERS' ../drmprime.patch
   git apply -3 --exclude='.forgejo/CODEOWNERS' ../deinterlace.patch
   pkgname=ffmpeg-v4l2-request
@@ -62,6 +41,8 @@ struct v4l2_ctrl_hevc_ext_sps_lt_rps { \
 
 build() {
   pkgname=$_pkgname
+  export CFLAGS="-I../../kheaders $CFLAGS"
+  export CXXFLAGS="-I../../kheaders $CXXFLAGS"
   old_build
   pkgname=ffmpeg-v4l2-request
 }
