@@ -20,7 +20,7 @@ prepare_env() {
     pacman -Syu --noconfirm --needed \
         base-devel git cmake curl zip sudo \
         mesa libglvnd pipewire-jack wayland-protocols \
-        cairo glibmm iio-sensor-proxy librsvg libdisplay-info
+        cairo glibmm iio-sensor-proxy librsvg libdisplay-info zstd
     useradd -m builder
     echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
     chown -R builder:builder "$WORK_DIR"
@@ -51,7 +51,7 @@ build_package() {
     if [[ "$pkg_dir" == "ffmpeg-v4l2-request" ]]; then
         log "Extracting kernel headers for ffmpeg..."
         mkdir "$WORK_DIR/$pkg_dir/kheaders"
-        tar -axf "$WORK_DIR/extras/kheaders.tar.zst" -C "$WORK_DIR/$pkg_dir/"
+        tar -axf "$WORK_DIR/extras/kheaders.tar.zst" -C "$WORK_DIR/$pkg_dir/kheaders"
         chown -R builder:builder "$WORK_DIR/$pkg_dir/kheaders"
     fi
     log "Building: $pkg_dir"
