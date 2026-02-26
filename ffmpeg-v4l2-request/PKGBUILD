@@ -18,7 +18,6 @@ b2sums+=('SKIP')
 b2sums+=('SKIP')
 b2sums+=('SKIP')
 b2sums+=('SKIP')
-b2sums+=('SKIP')
 
 pkgver() {
   cd ffmpeg
