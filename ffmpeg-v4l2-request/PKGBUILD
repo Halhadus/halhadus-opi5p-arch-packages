@@ -29,10 +29,10 @@ prepare() {
   cd "$srcdir"
   pkgname=$_pkgname
   old_prepare
-  git apply -3 --exclude='.forgejo/CODEOWNERS' ../v4l2request.diff
-  git apply -3 --exclude='.forgejo/CODEOWNERS' ../strps1.patch
-  git apply -3 --exclude='.forgejo/CODEOWNERS' ../strps2.patch
-  git apply -3 --exclude='.forgejo/CODEOWNERS' ../deinterlace.patch
+  git apply -3 --ignore-space-change --ignore-whitespace --exclude='.forgejo/CODEOWNERS' ../v4l2request.diff
+  git apply -3 --ignore-space-change --ignore-whitespace --exclude='.forgejo/CODEOWNERS' ../strps1.patch
+  git apply -3 --ignore-space-change --ignore-whitespace --exclude='.forgejo/CODEOWNERS' ../strps2.patch
+  git apply -3 --ignore-space-change --ignore-whitespace --exclude='.forgejo/CODEOWNERS' ../deinterlace.patch
   pkgname=ffmpeg-v4l2-request
 }
 
