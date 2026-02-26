@@ -16,7 +16,6 @@ source+=("strps2.patch::https://gitlab.collabora.com/detlev/ffmpeg/-/commit/dfa1
 b2sums+=('SKIP')
 b2sums+=('SKIP')
 b2sums+=('SKIP')
-b2sums+=('SKIP')
 
 pkgver() {
   cd ffmpeg
