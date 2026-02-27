@@ -29,8 +29,8 @@ pkgver() {
 
 prepare() {
   cd linux
-  echo "Patching DTS for PWM0..."
-  sed -i '/pwm@fd8b0000 {/,/};/ s/status = "disabled";/status = "okay";/' arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
+  echo "Patching DTS for PWM12..."
+  sed -i '/pwm@febf0000 {/,/};/ s/status = "disabled";/status = "okay";/' arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
   echo "Setting version..."
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
