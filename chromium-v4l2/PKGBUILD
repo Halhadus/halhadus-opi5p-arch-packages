@@ -1,0 +1,83 @@
+eval "$(curl -s -L https://raw.githubusercontent.com/hbiyik/agrrepo/refs/heads/master/libinherit/remote.sh)"
+inherit "https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/extra/chromium" ""
+
+prepare() {
+  export CFLAGS="-mcpu=cortex-a76.cortex-a55 -O2"
+  export CXXFLAGS="$CFLAGS"
+  export LDFLAGS="-fuse-ld=lld -Wl,--thinlto-jobs=4 -Wl,--no-keep-memory"
+  old_prepare
+}
+
+build() {
+  ninja() {
+    echo "=> Stripping Bloatware & Injecting RK3588 V4L2 Arguments..."
+    
+    local custom_gn_args=(
+      "use_v4l2_codec=true" 
+      "use_linux_video_acceleration=true" 
+      "enable_hevc_parser_and_hw_decoder=true" 
+      "use_av1_hw_decoder=true"
+      "use_vaapi=false"
+      "enable_vulkan=true"
+      "use_thin_lto=true" 
+      "concurrent_links=4"
+      "optimize_webui=true" 
+      "symbol_level=0"
+      "blink_symbol_level=0"
+      "enable_js_type_check=false"
+      "build_with_tflite_lib=false"
+      "build_with_mediapipe_lib=false"
+      "enable_ml_internal=false"
+      "use_on_device_model_service=false"
+      "enable_glic=false"
+      "enable_compose=false"
+      "enable_lens_desktop=false"
+      "enable_assistant=false"
+      "enable_speech_service=false"
+      "enable_browser_speech_service=false"
+      "enable_screen_ai_service=false"
+      "enable_rlz=false"
+      "enterprise_content_analysis=false"
+      "enterprise_data_controls=false"
+      "enterprise_screenshot_protection=false"
+      "enterprise_watermark=false"
+      "enterprise_client_certificates=false"
+      "enable_supervised_users=false"
+      "enable_reporting=false"
+      "safe_browsing_mode=0"
+      "enable_updater=false"
+      "enable_update_notifications=false"
+      "use_kerberos=false"
+      "enable_mdns=false"
+      "is_castos=false" 
+      "is_cast_android=false" 
+      "enable_vr=false" 
+      "enable_arcore=false" 
+      "enable_cardboard=false" 
+      "enable_openxr=false" 
+      "enable_hangout_services_extension=false" 
+      "enable_media_remoting=false"
+      "enable_remoting=false"
+      "enable_webrtc=false"
+      "rtc_use_pipewire=false"
+      "enable_pdf=true" 
+      "enable_printing=true" 
+      "use_system_freetype=true" 
+      "use_dbus=true" 
+    )
+
+    for flag in "${custom_gn_args[@]}"; do
+      echo "$flag" >> out/Release/args.gn
+    done
+    echo "=> Re-generating GN with stripped feature set..."
+    gn gen out/Release
+    unset -f ninja
+    command ninja "$@"
+  }
+
+  old_build
+}
+
+package() {
+  old_package
+}

@@ -4,13 +4,14 @@ pkgbase=linux-aarch64-rk3588-collabora-git
 pkgname=(
   "${pkgbase}"
   "${pkgbase}-headers"
+  "${pkgbase}-api-headers"
 )
 pkgver=6.19rc8.r1414371.3617217b
 pkgrel=1
 arch=('aarch64')
 url="https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux.git"
 license=('GPL2')
-makedepends=('kmod' 'bc' 'dtc' 'uboot-tools')
+makedepends=('kmod' 'bc' 'dtc' 'uboot-tools' 'rsync')
 options=(!strip)
 
 source=("git+$url#branch=rockchip-devel" 'config')
@@ -117,6 +118,14 @@ _package-headers() {
   echo "Adding symlink..."
   mkdir -p "$pkgdir/usr/src"
   ln -sr "$builddir" "$pkgdir/usr/src/$pkgbase"
+}
+
+_package-api-headers() {
+  pkgdesc='Kernel headers sanitized for use in userspace'
+  provides=('linux-api-headers')
+  conflicts=('linux-api-headers')
+  cd linux
+  make INSTALL_HDR_PATH="$pkgdir/usr" headers_install
 }
 
 for _p in ${pkgname[@]}; do
